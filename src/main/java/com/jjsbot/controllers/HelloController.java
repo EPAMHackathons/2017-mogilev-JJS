@@ -13,6 +13,7 @@ public class HelloController {
 
     @RequestMapping(method = RequestMethod.GET)
     public String hello(){
-        return "hello";
+        return "7de442fd";
     }
+
 }
