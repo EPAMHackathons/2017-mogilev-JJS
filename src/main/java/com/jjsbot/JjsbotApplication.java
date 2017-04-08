@@ -1,5 +1,6 @@
 package com.jjsbot;
 
+import com.jjsbot.services.PersonService;
 import com.jjsbot.vkApiHandlers.CallbackApiHandler;
 import com.vk.api.sdk.client.TransportClient;
 import com.vk.api.sdk.client.VkApiClient;
@@ -8,14 +9,8 @@ import com.vk.api.sdk.client.actors.UserActor;
 import com.vk.api.sdk.exceptions.ApiException;
 import com.vk.api.sdk.exceptions.ClientException;
 import com.vk.api.sdk.httpclient.HttpTransportClient;
-import com.vk.api.sdk.objects.UserAuthResponse;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.tuple.Pair;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -23,21 +18,18 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Properties;
 
 
 @SpringBootApplication
 public class JjsbotApplication {
-
     private final static String PROPERTIES_FILE = "config.properties";
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, ClientException, ApiException {
         SpringApplication.run(JjsbotApplication.class, args);
-
+        PersonService service = new PersonService();
+        service.getPersonById(48416512,"7467b2671b6982637ac57284d7b0fed054ee68663cbe5eaddd2190a07e957c733c32d5f60241cc1474a5e",2);
         CallbackApiHandler callbackApiHandler = new CallbackApiHandler();
     }
 

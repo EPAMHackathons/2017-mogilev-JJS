@@ -9,13 +9,13 @@ public class Person {
     private String city;
     private String birthDay;
     private String image;
-    private boolean sex;
+    private Boolean sex;
 
-    public boolean isSex() {
+    public Boolean isSex() {
         return sex;
     }
 
-    public void setSex(boolean sex) {
+    public void setSex(Boolean sex) {
         this.sex = sex;
     }
 
