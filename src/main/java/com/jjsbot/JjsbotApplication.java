@@ -46,20 +46,21 @@ public class JjsbotApplication {
     }
 
     private static GroupActor initVkApi(VkApiClient apiClient, Properties properties) {
-        int groupId = Integer.parseInt(properties.getProperty("groupId"));
-        String token = properties.getProperty("token");
+        int groupId = Integer.parseInt(CallbackApiHandler.groupId);
+        String token = CallbackApiHandler.token;
         if (groupId == 0 || token == null) throw new RuntimeException("Params are not set");
 
-        GroupActor actor = new GroupActor(groupId, token);
+        UserActor actor = new UserActor(groupId, token);
+        GroupActor groupActor = new GroupActor(groupId, token);
         try {
-            apiClient.groups().setCallbackSettings(actor, actor.getGroupId()).messageNew(true).execute();
+            apiClient.groups().setCallbackSettings(actor, groupActor.getGroupId()).messageNew(true).execute();
         } catch (ApiException e) {
             throw new RuntimeException("Api error during init", e);
         } catch (ClientException e) {
             throw new RuntimeException("Client error during init", e);
         }
 
-        return actor;
+        return groupActor;
     }
 
     @Bean

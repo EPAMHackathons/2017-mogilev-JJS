@@ -16,7 +16,8 @@ import java.util.Random;
 public class CallbackApiHandler extends CallbackApi {
 
     private static String confirmationToken = "7de442fd";
-    private static String token = "dwqde535t2r32rerwe121321e31e31e2";
+    public static String token = "dwqde535t2r32rerwe121321e31e31e2";
+    public static final String groupId= "144565033";
 
     private final Random random = new Random();
 
