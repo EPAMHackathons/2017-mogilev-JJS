@@ -1,5 +1,7 @@
 package com.jjsbot.services;
 
+import com.jjsbot.models.Person;
+
 interface PersonService {
-    String getPersonsJson(final String id);
+    Person getPersonById(final String id);
 }

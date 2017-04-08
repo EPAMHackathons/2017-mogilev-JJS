@@ -34,13 +34,9 @@ import java.util.Properties;
 public class JjsbotApplication {
 
     private final static String PROPERTIES_FILE = "config.properties";
-    public static VkApiClient apiClient;
 
     public static void main(String[] args) throws IOException {
         SpringApplication.run(JjsbotApplication.class, args);
-
-        TransportClient transportClient = HttpTransportClient.getInstance();
-        VkApiClient apiClient = new VkApiClient(transportClient);
 
         CallbackApiHandler callbackApiHandler = new CallbackApiHandler();
     }
@@ -75,6 +71,11 @@ public class JjsbotApplication {
                         .allowCredentials(true);
             }
         };
+    }
+    @Bean
+    public VkApiClient vkApiClient(){
+        TransportClient transportClient = HttpTransportClient.getInstance();
+        return new VkApiClient(transportClient);
     }
 }
 

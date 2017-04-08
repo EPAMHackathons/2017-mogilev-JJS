@@ -2,10 +2,12 @@ package com.jjsbot.vkApiHandlers;
 
 import com.jjsbot.JjsbotApplication;
 import com.vk.api.sdk.callback.CallbackApi;
+import com.vk.api.sdk.client.VkApiClient;
 import com.vk.api.sdk.client.actors.GroupActor;
 import com.vk.api.sdk.exceptions.ApiException;
 import com.vk.api.sdk.exceptions.ClientException;
 import com.vk.api.sdk.objects.messages.Message;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Random;
 
@@ -14,12 +16,12 @@ import java.util.Random;
  */
 
 public class CallbackApiHandler extends CallbackApi {
-
-    private static String confirmationToken = "7de442fd";
+    public static final String groupId = "144565033";
     public static String token = "dwqde535t2r32rerwe121321e31e31e2";
-    public static final String groupId= "144565033";
-
+    private static String confirmationToken = "7de442fd";
     private final Random random = new Random();
+    @Autowired
+    private VkApiClient apiClient;
 
     @Override
     public void messageNew(Integer groupId, Message message) {
@@ -28,7 +30,7 @@ public class CallbackApiHandler extends CallbackApi {
         GroupActor actor = new GroupActor(groupId, token);
 
         try {
-            JjsbotApplication.apiClient.messages().send(actor).message("check").userId(userId).randomId(random.nextInt()).execute();
+            apiClient.messages().send(actor).message("check").userId(userId).randomId(random.nextInt()).execute();
         } catch (ApiException e) {
             e.printStackTrace();
         } catch (ClientException e) {
