@@ -1,14 +1,12 @@
 buildscript {
+	ext {
+		springBootVersion = '1.5.2.RELEASE'
+	}
 	repositories {
-		mavenLocal()
-		jcenter()
-		maven { url 'http://repo.spring.io/plugins-release' }
-		maven { url 'http://repo.spring.io/milestone' }
-		maven { url "https://plugins.gradle.org/m2/" }
+		mavenCentral()
 	}
 	dependencies {
-		classpath group: 'org.springframework.boot', name: 'spring-boot-gradle-plugin', version: spring_boot_version
-		classpath group: 'org.springframework.build.gradle', name: 'propdeps-plugin', version: '0.0.7'
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
 	}
 }
 
@@ -19,38 +17,13 @@ apply plugin: 'org.springframework.boot'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 1.8
 
-defaultTasks 'bootRun'
-
-bootRepackage {
-	mainClass = 'com.jjsbot.JjsbotApplication'
-}
-
-springBoot {
-	mainClass = 'com.jjsbot.JjsbotApplication'
-	executable = true
-}
-
-bootRun {
-	addResources = false
-}
 repositories {
-	maven { url 'http://repo.spring.io/milestone' }
-	maven { url 'http://repo.spring.io/snapshot' }
-	maven { url 'http://repo.maven.apache.org/maven2' }
+	mavenCentral()
 }
+
 
 dependencies {
-	compile group: 'org.springframework.boot', name: 'spring-boot-actuator'
-	compile group: 'org.springframework.boot', name: 'spring-boot-autoconfigure'
-	compile group: 'org.springframework.boot', name: 'spring-boot-loader-tools'
-	compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
-	compile(group: 'org.springframework.boot', name: 'spring-boot-starter-web') {
-		exclude module: 'spring-boot-starter-tomcat'
-	}
-	compile(group: 'org.springframework', name: 'spring-context-support') {
-		exclude(module: 'quartz')
-	}
-	compile group: 'javax.inject', name: 'javax.inject', version: javax_inject_version
-	compile 'com.vk.api:sdk:0.5.0'
-	testCompile group: 'junit', name: 'junit', version: '4.11'
+	compile('org.springframework.boot:spring-boot-starter-web')
+	compile('org.springframework.boot:spring-boot-starter-web-services')
+	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
