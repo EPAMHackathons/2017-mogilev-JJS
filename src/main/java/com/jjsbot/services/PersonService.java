@@ -1,5 +1,9 @@
 package com.jjsbot.services;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jjsbot.models.JsonDTO;
+import com.jjsbot.models.Link;
 import com.jjsbot.models.Person;
 import com.vk.api.sdk.client.VkApiClient;
 import com.vk.api.sdk.client.actors.UserActor;
@@ -12,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PersonService {
@@ -23,7 +28,7 @@ public class PersonService {
         return person;
     }
 
-    private Person getPersonById(UserActor actor, int id, int level) throws ClientException, ApiException {
+    private Person getPersonById(UserActor actor, int id, int level, int counter) throws ClientException, ApiException {
         UserXtrCounters userInfo = vkApiClient.users().get(actor)
                 .fields(UserField.BDATE, UserField.CITY, UserField.PHOTO_100
                         , UserField.SEX, UserField.LISTS)
@@ -32,7 +37,7 @@ public class PersonService {
         List<Person> friends = new ArrayList<>();
         for (Integer value : list) {
             if (level != 0) {
-                friends.add(getPersonById(actor, id, level--));
+                friends.add(getPersonById(actor, id, level - 1));
             }
         }
         String firstName = userInfo.getFirstName();
@@ -50,5 +55,38 @@ public class PersonService {
         person.setLastName(lastName);
         person.setCity(city);
         return person;
+    }
+
+    private List<Link> getLinksList(Person person) {
+        List<Link> links = new ArrayList<>();
+        for (Person friend : person.getFriends()) {
+            Link link = new Link();
+            link.setSource(friend.getId());
+            link.setTarget(person.getId());
+            links.add(link);
+            if (!friend.getFriends().isEmpty()) {
+                links.addAll(getLinksList(friend));
+            }
+        }
+        return links.stream().distinct().collect(Collectors.toList());
+    }
+
+    private List<Person> getPersonsList(Person person) {
+        List<Person> persons = new ArrayList();
+        for (Person friend : person.getFriends()) {
+            persons.add(friend);
+            if (!friend.getFriends().isEmpty()) {
+                persons.addAll(getPersonsList(friend));
+            }
+        }
+        return persons.stream().distinct().collect(Collectors.toList());
+    }
+
+    public String arrangeToOlegJson(final Person person) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        List links = getLinksList(person);
+        List persons = getPersonsList(person);
+        JsonDTO jsonDTO = new JsonDTO(persons, links);
+        return mapper.writeValueAsString(jsonDTO);
     }
 }

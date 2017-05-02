@@ -1,15 +1,45 @@
 package com.jjsbot.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.List;
 
 public class Person {
+    @JsonProperty("id")
+    private int id;
+    @JsonProperty("vkId")
+    private long vkId;
+    @JsonProperty("firstName")
     private String firstName;
+    @JsonProperty("lastName")
     private String lastName;
+    @JsonIgnore
     private List<Person> friends;
+    @JsonProperty("city")
     private String city;
+    @JsonProperty("name")
     private String birthDay;
+    @JsonProperty("image")
     private String image;
+    @JsonProperty("sex")
     private Boolean sex;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public long getVkId() {
+        return vkId;
+    }
+
+    public void setVkId(long vkId) {
+        this.vkId = vkId;
+    }
 
     public Boolean isSex() {
         return sex;
@@ -65,5 +95,15 @@ public class Person {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.getId();
+    }
+
+    @Override
+    public boolean equals(Object person) {
+        return person instanceof Person && ((Person)person).getId()==this.getId();
     }
 }
