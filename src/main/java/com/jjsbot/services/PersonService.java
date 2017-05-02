@@ -28,7 +28,7 @@ public class PersonService {
         return person;
     }
 
-    private Person getPersonById(UserActor actor, int id, int level, int counter) throws ClientException, ApiException {
+    private Person getPersonById(UserActor actor, int id, int level) throws ClientException, ApiException {
         UserXtrCounters userInfo = vkApiClient.users().get(actor)
                 .fields(UserField.BDATE, UserField.CITY, UserField.PHOTO_100
                         , UserField.SEX, UserField.LISTS)
