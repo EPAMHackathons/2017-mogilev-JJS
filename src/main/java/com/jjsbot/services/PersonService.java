@@ -88,6 +88,7 @@ public class PersonService {
 
     private List<Person> getPersonsList(Person person) {
         List<Person> persons = new ArrayList();
+        persons.add(person);
         for (Person friend : person.getFriends()) {
             persons.add(friend);
             if (friend.getFriends() != null && !friend.getFriends().isEmpty()) {
