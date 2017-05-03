@@ -37,7 +37,7 @@ public class PersonService {
         List<Person> friends = new ArrayList<>();
         for (Integer value : list) {
             if (level != 0) {
-                friends.add(getPersonById(actor, id, level - 1));
+                friends.add(getPersonById(actor, id, level - 1,counter));
             }
         }
         String firstName = userInfo.getFirstName();
@@ -61,8 +61,8 @@ public class PersonService {
         List<Link> links = new ArrayList<>();
         for (Person friend : person.getFriends()) {
             Link link = new Link();
-            link.setSource(friend.getId());
-            link.setTarget(person.getId());
+            link.setSource(friend.getVkId());
+            link.setTarget(person.getVkId());
             links.add(link);
             if (!friend.getFriends().isEmpty()) {
                 links.addAll(getLinksList(friend));

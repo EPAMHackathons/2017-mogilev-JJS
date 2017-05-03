@@ -7,9 +7,7 @@ import java.util.List;
 
 public class Person {
     @JsonProperty("id")
-    private int id;
-    @JsonProperty("vkId")
-    private long vkId;
+    private int vkId;
     @JsonProperty("firstName")
     private String firstName;
     @JsonProperty("lastName")
@@ -25,19 +23,11 @@ public class Person {
     @JsonProperty("sex")
     private Boolean sex;
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public long getVkId() {
+    public int getVkId() {
         return vkId;
     }
 
-    public void setVkId(long vkId) {
+    public void setVkId(int vkId) {
         this.vkId = vkId;
     }
 
