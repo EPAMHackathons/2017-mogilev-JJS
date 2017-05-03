@@ -8,20 +8,22 @@ import java.util.List;
 public class Person {
     @JsonProperty("id")
     private int vkId;
-    @JsonProperty("firstName")
+    @JsonIgnore
     private String firstName;
-    @JsonProperty("lastName")
+    @JsonIgnore
     private String lastName;
     @JsonIgnore
     private List<Person> friends;
     @JsonProperty("city")
     private String city;
-    @JsonProperty("name")
+    @JsonProperty("birthday")
     private String birthDay;
-    @JsonProperty("image")
+    @JsonProperty("photoURL")
     private String image;
-    @JsonProperty("sex")
+    @JsonIgnore
     private Boolean sex;
+    @JsonProperty("userName")
+    private String userName;
 
     public int getVkId() {
         return vkId;
@@ -87,13 +89,21 @@ public class Person {
         this.image = image;
     }
 
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
     @Override
     public int hashCode() {
-        return this.getId();
+        return this.getVkId();
     }
 
     @Override
     public boolean equals(Object person) {
-        return person instanceof Person && ((Person)person).getId()==this.getId();
+        return person instanceof Person && ((Person)person).getVkId()==this.getVkId();
     }
 }
