@@ -15,7 +15,9 @@ import com.vk.api.sdk.objects.users.UserXtrCounters;
 import com.vk.api.sdk.queries.users.UserField;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -136,8 +138,8 @@ public class PersonService {
         for (Person friend : person.getFriends()) {
             Link link = new Link();
             if (friend != null && person!= null) {
-                link.setSource(friend.getVkId());
-                link.setTarget(person.getVkId());
+                link.setSource(person.getVkId());
+                link.setTarget(friend.getVkId());
             }
             links.add(link);
             if (friend.getFriends() != null && !friend.getFriends().isEmpty()) {
@@ -156,10 +158,11 @@ public class PersonService {
                 persons.addAll(getPersonsList(friend));
             }
         }
-        return persons.stream().distinct().collect(Collectors.toList());
+        Comparator<Person> personComparator = (person1, friend)->Integer.compare(person1.getId(),friend.getId());
+        return persons.stream().distinct().sorted(personComparator).collect(Collectors.toList());
     }
 
-    public String arrangeToOlegJson(final Person person) throws JsonProcessingException {
+    public String arrangeToOlegJson(final Person person) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         List links = getLinksList(person);
         List persons = getPersonsList(person);
