@@ -2,6 +2,7 @@ package com.jjsbot.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jjsbot.exceptions.BadFlowException;
 import com.jjsbot.models.JsonDTO;
 import com.jjsbot.models.Link;
 import com.jjsbot.models.Person;
@@ -22,9 +23,9 @@ import java.util.stream.Collectors;
 public class PersonService {
     private VkApiClient vkApiClient = new VkApiClient(HttpTransportClient.getInstance());
 
-    public Person getPersonById(final int id, final String access_token, int level) throws ClientException, ApiException, InterruptedException {
+    public Person getPersonById(final int id, final String access_token) throws ClientException, ApiException, InterruptedException {
         final UserActor actor = new UserActor(id, access_token);
-        Person person = getPersonById(actor, id, level);
+        Person person = getPersonTreeWithoutRecursion(actor, id);
         return person;
     }
 
@@ -69,7 +70,67 @@ public class PersonService {
             return new Person();
         }
     }
-
+    private Person getPersonTreeWithoutRecursion(UserActor actor, int id){
+        try {
+            int counter=0;
+            UserXtrCounters userInfo = fetchUserInfo(actor,id);
+            Person person = fetchPersonData(userInfo);
+            person.setId(counter);
+            counter++;
+            List<Person> myFriends = new ArrayList<>();
+            Thread.sleep(200);
+            List<Integer> list = vkApiClient.friends().get(actor).userId(id).execute().getItems();
+            for(Integer value: list){
+                List<Integer> friendsFriends = vkApiClient.friends().get(actor).userId(id).execute().getItems();
+                UserXtrCounters userInfoFriend = fetchUserInfo(actor,value);
+                Person myFriend = fetchPersonData(userInfoFriend);
+                myFriend.setId(counter);
+                counter++;
+                List<Person> myFriendsFriends = new ArrayList<>();
+                Thread.sleep(200);
+                for(Integer friendsValue:friendsFriends){
+                    Person myFriendsFriend = fetchPersonData(userInfoFriend);
+                    myFriendsFriend.setId(counter);
+                    counter++;
+                    myFriendsFriends.add(myFriendsFriend);
+                }
+                myFriend.setFriends(myFriendsFriends);
+                myFriends.add(myFriend);
+            }
+            person.setFriends(myFriends);
+            return person;
+        } catch (ApiException e) {
+            throw new BadFlowException();
+        } catch (ClientException e) {
+            throw new BadFlowException();
+        } catch (InterruptedException e) {
+            throw new BadFlowException();
+        }
+    }
+    private Person fetchPersonData(UserXtrCounters userInfo){
+        String firstName = userInfo.getFirstName();
+        String lastName = userInfo.getLastName();
+        String image = userInfo.getPhoto100();
+        String birthday = userInfo.getBdate();
+        String city = userInfo.getCity().getTitle();
+        Boolean sex = userInfo.getSex().getValue() == 1 ? false : true;
+        final Person person = new Person();
+        person.setVkId(userInfo.getId());
+        person.setFirstName(firstName);
+        person.setUserName(firstName + " " + lastName);
+        person.setSex(sex);
+        person.setBirthDay(birthday);
+        person.setImage(image);
+        person.setLastName(lastName);
+        person.setCity(city);
+        return person;
+    }
+    private UserXtrCounters fetchUserInfo(UserActor actor,int id) throws ClientException, ApiException {
+        return vkApiClient.users().get(actor)
+                .fields(UserField.BDATE, UserField.CITY, UserField.PHOTO_100
+                        , UserField.SEX, UserField.LISTS)
+                .userIds(String.valueOf(id)).execute().get(0);
+    }
     private List<Link> getLinksList(Person person) {
         List<Link> links = new ArrayList<>();
         for (Person friend : person.getFriends()) {

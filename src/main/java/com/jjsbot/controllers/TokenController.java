@@ -51,11 +51,9 @@ public class TokenController {
             RestTemplate restTemplate = new RestTemplate();
             String result = restTemplate.getForObject(urlToGetToken, String.class);
             TokenResponse token = mapper.readValue(result, TokenResponse.class);
-
-            Person person = personService.getPersonById(token.getUser_id(), token.getAccess_token(), 2);
+            Person person = personService.getPersonById(token.getUser_id(), token.getAccess_token());
             //String json = personService.arrangeToOlegJson(person);
 
-            personService.counter = 0;
 
             return ResponseEntity.ok(person);
         }

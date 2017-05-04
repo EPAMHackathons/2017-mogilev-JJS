@@ -7,6 +7,8 @@ import java.util.List;
 
 public class Person {
     @JsonProperty("id")
+    private int id;
+    @JsonProperty("link")
     private int vkId;
     @JsonIgnore
     private String firstName;
@@ -14,7 +16,17 @@ public class Person {
     private String lastName;
     @JsonIgnore
     private List<Person> friends;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     @JsonProperty("city")
+
     private String city;
     @JsonProperty("birthday")
     private String birthDay;
@@ -104,6 +116,6 @@ public class Person {
 
     @Override
     public boolean equals(Object person) {
-        return person instanceof Person && ((Person)person).getVkId()==this.getVkId();
+        return person instanceof Person && ((Person) person).getVkId() == this.getVkId();
     }
 }
